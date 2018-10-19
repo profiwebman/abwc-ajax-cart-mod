@@ -6,117 +6,128 @@
  * @package     ABWC_Ajax_Cart
  */
 
-jQuery( function ( $ ) {
+jQuery(function($) {
 
-	// global wc_add_to_cart_params.
-	if ( typeof wc_add_to_cart_params === 'undefined' ) {
-		return false;
-	}
+  // global wc_add_to_cart_params.
+  if (typeof wc_add_to_cart_params === 'undefined') {
+    return false;
+  }
 
-	$( document ).on( 'click', '.product-type-simple form .single_add_to_cart_button', function ( e ) {
-		e.preventDefault();
+  $(document).on('click', '.product-type-simple form .single_add_to_cart_button', function(e) {
+    e.preventDefault();
 
-		var $thisbutton = $( this );
-		var $databutton = $( '.abwc-ajax-btn' );
+    var $thisbutton = $(this);
+    var $databutton = $('.abwc-ajax-btn');
 
-		if ( ! $databutton.attr( 'data-product_id' ) ) {
-			return true;
-		}
+    if (!$databutton.attr('data-product_id')) {
+      return true;
+    }
 
-		$thisbutton.removeClass( 'added' );
-		$thisbutton.addClass( 'loading' );
+    $thisbutton.removeClass('added');
 
-		var data = {
-			product_id: $databutton.data( 'product_id' ),
-			product_sku: $databutton.data( 'product_sku' ),
-			quantity: $( '.quantity .qty' ).val()
-		};
+    $thisbutton.addClass('loading');
 
-		// Trigger event.
-		$( document.body ).trigger( 'adding_to_cart', [ $thisbutton, data ] );
+    var data = {
+      product_id: $databutton.data('product_id'),
+      product_sku: $databutton.data('product_sku'),
+      quantity: $('.quantity .qty').val()
+    };
 
-		// Ajax action.
-		$.post( wc_add_to_cart_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'add_to_cart' ), data, function ( response ) {
+    // Trigger event.
+    $(document.body).trigger('adding_to_cart', [$thisbutton, data]);
 
-			if ( ! response ) {
-				return;
-			}
+    // Ajax action.
+    $.post(wc_add_to_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'add_to_cart'), data, function(response) {
 
-			var this_page = window.location.toString();
+      if (!response) {
+        return;
+      }
 
-			this_page = this_page.replace( 'add-to-cart', 'added-to-cart' );
 
-			if ( response.error && response.product_url ) {
-				window.location = response.product_url;
-				return;
-			}
+      var this_page = window.location.toString();
 
-			// Redirect to cart option.
-			if ( wc_add_to_cart_params.cart_redirect_after_add === 'yes' ) {
+      this_page = this_page.replace('add-to-cart', 'added-to-cart');
 
-				window.location = wc_add_to_cart_params.cart_url;
-				return;
+      if (response.error && response.product_url) {
+        window.location = response.product_url;
+        return;
+      }
 
-			} else {
+      // Redirect to cart option.
+      if (wc_add_to_cart_params.cart_redirect_after_add === 'yes') {
 
-				$thisbutton.removeClass( 'loading' );
+        window.location = wc_add_to_cart_params.cart_url;
+        return;
 
-				var fragments = response.fragments;
-				var cart_hash = response.cart_hash;
+      } else {
 
-				// Block fragments class.
-				if ( fragments ) {
-					$.each( fragments, function ( key ) {
-						$( key ).addClass( 'updating' );
-					} );
-				}
+        $thisbutton.removeClass('loading');
 
-				// Block widgets and fragments.
-				$( '.shop_table.cart, .updating, .cart_totals' ).fadeTo( '400', '0.6' ).block( {
-					message: null,
-					overlayCSS: {
-						opacity: 0.6
-					}
-				} );
+        var fragments = response.fragments;
+        var cart_hash = response.cart_hash;
 
-				// Changes button classes.
-				$thisbutton.addClass( 'added' );
+        // Block fragments class.
+        if (fragments) {
+          $.each(fragments, function(key) {
+            $(key).addClass('updating');
+          });
+        }
 
-				// View cart text.
-				if ( ! wc_add_to_cart_params.is_cart && $thisbutton.parent().find( '.added_to_cart' ).length === 0 ) {
-					$thisbutton.after( ' <a href="' + wc_add_to_cart_params.cart_url + '" class="added_to_cart wc-forward" title="' +
-					wc_add_to_cart_params.i18n_view_cart + '">' + wc_add_to_cart_params.i18n_view_cart + '</a>' );
-				}
+        // Block widgets and fragments.
+        $('.shop_table.cart, .updating, .cart_totals').fadeTo('400', '0.6').block({
+          message: null,
+          overlayCSS: {
+            opacity: 0.6
+          }
+        });
 
-				// Replace fragments.
-				if ( fragments ) {
-					$.each( fragments, function ( key, value ) {
-						$( key ).replaceWith( value );
-					} );
-				}
+        // Changes button classes.
+        $thisbutton.addClass('added');
 
-				// Unblock.
-				$( '.widget_shopping_cart, .updating' ).stop( true ).css( 'opacity', '1' ).unblock();
+        // View cart text.
+        if (!wc_add_to_cart_params.is_cart && $thisbutton.parent().find('.added_to_cart').length === 0) {
+          $thisbutton.after(' <a href="' + wc_add_to_cart_params.cart_url + '" class="added_to_cart wc-forward" title="' + wc_add_to_cart_params.i18n_view_cart + '">' + wc_add_to_cart_params.i18n_view_cart + '</a>');
+        }
 
-				// Cart page elements.
-				$( '.shop_table.cart' ).load( this_page + ' .shop_table.cart:eq(0) > *', function () {
+        // Replace fragments.
+        if (fragments) {
+          $.each(fragments, function(key, value) {
+            $(key).replaceWith(value);
+          });
+        }
 
-					$( '.shop_table.cart' ).stop( true ).css( 'opacity', '1' ).unblock();
+        // Unblock.
+        $('.widget_shopping_cart, .updating').stop(true).css('opacity', '1').unblock();
 
-					$( document.body ).trigger( 'cart_page_refreshed' );
-				} );
+        // Cart page elements.
+        $('.shop_table.cart').load(this_page + ' .shop_table.cart:eq(0) > *', function() {
 
-				$( '.cart_totals' ).load( this_page + ' .cart_totals:eq(0) > *', function () {
-					$( '.cart_totals' ).stop( true ).css( 'opacity', '1' ).unblock();
-				} );
+          $('.shop_table.cart').stop(true).css('opacity', '1').unblock();
 
-				// Trigger event so themes can refresh other areas.
-				$( document.body ).trigger( 'added_to_cart', [ fragments, cart_hash, $thisbutton ] );
+          $(document.body).trigger('cart_page_refreshed');
+        });
 
-			}// End if().
+        $('.cart_totals').load(this_page + ' .cart_totals:eq(0) > *', function() {
+          $('.cart_totals').stop(true).css('opacity', '1').unblock();
+        });
 
-		} );
+        // Trigger event so themes can refresh other areas.
+        $(document.body).trigger('added_to_cart', [fragments, cart_hash, $thisbutton]);
 
-	} );
+      } // End if().
 
-} );
+    });
+
+    var dataone = {
+      action: 'abwc_get_cart_total',
+      product_id: $databutton.data('product_id')
+    }
+
+    $.post(wc_add_to_cart_params.ajax_url, dataone, function(response) {
+        var obj = jQuery.parseJSON( response );
+        console.log(obj);
+        $('.modal--go-to-cart').arcticmodal();
+    });
+  });
+
+});

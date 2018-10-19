@@ -31,7 +31,7 @@ module.exports = function ( grunt ) {
 			frontend: {
 				files: {
 					'assets/js/abwc-ajax-cart-mod.min.js': [ 'assets/js/abwc-ajax-cart-mod.js' ],
-					'assets/js/abwc-ajax-variation-cart.min.js': [ 'assets/js/abwc-ajax-variation-cart.js' ]
+					'assets/js/abwc-ajax-variation-cart-mod.min.js': [ 'assets/js/abwc-ajax-variation-cart-mod.js' ]
 				}
 			}
 		},
