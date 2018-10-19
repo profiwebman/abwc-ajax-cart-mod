@@ -1,1 +1,139 @@
-/** Css for the plugin **/
+/* Css for the plugin */
+.pv-modal {
+  width: 414px;
+  padding: 31px 31px 33px 32px;
+  background: white;
+  display: none;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.arcticmodal-container .pv-modal {
+  display: block;
+}
+
+.pv-modal__main {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -ms-align-items: flex-start;
+  align-items: flex-start;
+}
+
+.pv-modal__title {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: .7;
+  text-transform: uppercase;
+  margin-bottom: 29px;
+}
+
+.pv-modal__info {
+  margin-top: -4px;
+}
+
+.pv-modal__result {
+  display: block;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 11px;
+}
+
+.pv-modal__img {
+  width: 79px;
+  height: 79px;
+  border: 1px #cacaca solid;
+  margin-right: 22px;
+}
+
+.pv-modal__cost {
+  font-weight: 600;
+  padding-bottom: 7px;
+  display: block;
+  width: 100%;
+  border-bottom: 1px lightgray solid;
+}
+
+.pv-modal__price {
+  font-size: 12px;
+  margin-left: 90px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -ms-align-items: flex-end;
+  align-items: flex-end;
+}
+
+.pv-modal__price span:first-child {
+  margin-left: 11px;
+}
+
+.pv-modal__total {
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-block;
+  margin-left: 73px;
+  margin-bottom: -7px;
+}
+
+.pv-modal .btn {
+  width: 50%;
+  display: block;
+  height: 40px;
+  padding: 0;
+}
+
+.pv-modal__footer {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+}
+
+.btn--gtc {
+  margin-left: auto;
+  background: #fddb3e;
+  color: #000000;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.btn.btn--gtc:hover {
+  background: #d0ae0f;
+}
+
+.btn--cm {
+  background: lightgray;
+  color: black;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+.btn--cm:hover {
+  background: gray;
+}
+
+.pv-modal__close {
+  position: absolute;
+  top: 13px;
+  right: 17px;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  background: url(../cancel.svg) center no-repeat;
+  background-size: contain;
+  opacity: .7;
+}
+
+.pv-modal__name {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 1px;
+}
+
+.pv-modal__img img {
+  width: 100%;
+  height: 100%;
+}

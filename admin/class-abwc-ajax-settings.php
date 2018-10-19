@@ -2,7 +2,7 @@
 /*
  * Our ABWC_Ajax_Cart_Admin class
  * This adds settings for the plugin
- * 
+ *
  * @since 1.2.0
  */
 
@@ -63,7 +63,7 @@ class ABWC_Ajax_Cart_Admin {
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
-		
+
 		add_filter( 'plugin_action_links_' . plugin_basename( ABWC_AJAX_CART_PLUGIN_FILE ), array( $this, 'plugin_settings_link' ) );
 	}
 
@@ -91,6 +91,7 @@ class ABWC_Ajax_Cart_Admin {
 		add_settings_section( 'general_section', __( 'General Settings', 'abwc-ajax-cart-mod' ), array( $this, 'section_general' ), 'abwc_ajaxified_settings' );
 
 		add_settings_field( 'enable_on_archive_page', __( 'Enable on archive page', 'abwc-ajax-cart-mod' ), array( $this, 'enable_on_archive_page_option' ), 'abwc_ajaxified_settings', 'general_section' );
+		add_settings_field( 'show_popup_after_cart_add', __( 'Show popup after add to cart', 'abwc-ajax-cart-mod' ), array( $this, 'show_popup_after_cart_add_option' ), 'abwc_ajaxified_settings', 'general_section' );
 	}
 
 	/**
@@ -104,7 +105,18 @@ class ABWC_Ajax_Cart_Admin {
 		<?php
 	}
 
-	/* Settings Page 
+	/**
+	 * Html for enable archive option
+	 */
+	public function show_popup_after_cart_add_option() {
+
+		$show_popup_after_cart_add = $this->option( 'show_popup_after_cart_add' );
+		?>
+		<input type='checkbox' <?php echo 'yes' == $show_popup_after_cart_add ? 'checked' : ''; ?> name='abwc_ajax_plugin_options[show_popup_after_cart_add]' value="yes" /> <?php _e( 'Enable popup window after adding product in cart', 'abwc-ajax-cart-mod' ); ?>
+		<?php
+	}
+
+	/* Settings Page
 	 * ===================================================================
 	 */
 
@@ -118,14 +130,14 @@ class ABWC_Ajax_Cart_Admin {
 	public function options_page() {
 		?>
 		<div class="wrap">
-			<h2><?php _e( "Ajaxified Cart", "abwc-ajax-cart-mod" ); ?></h2>
+			<h2><?php _e( 'Ajaxified Cart', 'abwc-ajax-cart-mod' ); ?></h2>
 			<form action="options.php" method="post" class="abwc-ajax-settings-form">
 				<?php
 				settings_fields( 'abwc_ajax_plugin_options' );
 				do_settings_sections( 'abwc_ajaxified_settings' );
 				?>
 				<p class="submit">
-					<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( __( "Save Changes", "abwc-ajax-cart-mod" ) ); ?>" />
+					<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( __( 'Save Changes', 'abwc-ajax-cart-mod' ) ); ?>" />
 				</p>
 
 			</form>
@@ -145,17 +157,17 @@ class ABWC_Ajax_Cart_Admin {
 	 * General settings section
 	 */
 	public function section_general() {
-		
+
 	}
-	
+
 	/**
 	 * Adds setting link
-	 * 
+	 *
 	 * @param array $links
 	 * @return string
 	 */
 	function plugin_settings_link( $links ) {
-		$links[] = '<a href="' . admin_url( "options-general.php?page=abwc_ajaxified_settings" ) . '">' . __( "Settings", "abwc-ajax-cart-mod" ) . '</a>';
+		$links[] = '<a href="' . admin_url( 'options-general.php?page=abwc_ajaxified_settings' ) . '">' . __( 'Settings', 'abwc-ajax-cart-mod' ) . '</a>';
 		return $links;
 	}
 
