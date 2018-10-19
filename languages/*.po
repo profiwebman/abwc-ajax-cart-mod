@@ -1,8 +1,8 @@
-#: admin/class-abwc-ajax-notices.php:71 admin/class-abwc-ajax-settings.php:158
+#: admin/class-abwc-ajax-notices.php:71 admin/class-abwc-ajax-settings.php:170
 msgid "Settings"
 msgstr ""
 
-#: admin/class-abwc-ajax-settings.php:76 admin/class-abwc-ajax-settings.php:121
+#: admin/class-abwc-ajax-settings.php:76 admin/class-abwc-ajax-settings.php:133
 msgid "Ajaxified Cart"
 msgstr ""
 
@@ -14,6 +14,14 @@ msgstr ""
 msgid "Enable on archive page"
 msgstr ""
 
-#: admin/class-abwc-ajax-settings.php:103
+#: admin/class-abwc-ajax-settings.php:94
+msgid "Show popup after add to cart"
+msgstr ""
+
+#: admin/class-abwc-ajax-settings.php:104
 msgid "Enable ajaxified cart for variable products on archive page"
+msgstr ""
+
+#: admin/class-abwc-ajax-settings.php:115
+msgid "Enable popup window after adding product in cart"
 msgstr ""
