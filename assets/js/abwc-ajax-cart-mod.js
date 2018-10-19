@@ -114,20 +114,31 @@ jQuery(function($) {
         // Trigger event so themes can refresh other areas.
         $(document.body).trigger('added_to_cart', [fragments, cart_hash, $thisbutton]);
 
+        var dataone = {
+          action: 'abwc_get_cart_total',
+          product_id: $databutton.data('product_id'),
+          quantity: $('.quantity .qty').val()
+        }
+
+        $.post(wc_add_to_cart_params.ajax_url, dataone, function(response) {
+          if (!response)
+            return;
+
+          var obj = jQuery.parseJSON(response);
+
+          var c = $('<div class="pv-modal modal--go-to-cart">');
+              c.html('<div class="pv-modal__content"> <div class="pv-modal__header"> <h5 class="pv-modal__title">There\'s '+obj.count_in_cart+' products in your cart</h5> </div> <div class="pv-modal__body"> <div class="pv-modal__main"> <div class="pv-modal__img"> <img src="'+obj.image+'" alt=""> </div> <div class="pv-modal__info"> <span class="pv-modal__result">Product added successfully</span> <span class="pv-modal__name">'+obj.product_name+'</span> <span class="pv-modal__cost">'+obj.product_price+'</span> </div> </div> <div class="pv-modal__price"> <span>Total products:</span> <span class="pv-modal__total">'+obj.total_price+'</span> </div> </div> <div class="pv-modal__footer"> <a href="#" class="btn btn--cm arcticmodal-close">Continue Shopping</a> <a href="'+wc_add_to_cart_params.cart_url+'" class="btn btn--gtc">Go to cart</a> </div> </div>');
+              c.prepend('<div class="pv-modal__close arcticmodal-close"></div>');
+              $.arcticmodal({
+                  content: c
+              });
+        });
+
       } // End if().
 
     });
 
-    var dataone = {
-      action: 'abwc_get_cart_total',
-      product_id: $databutton.data('product_id')
-    }
 
-    $.post(wc_add_to_cart_params.ajax_url, dataone, function(response) {
-        var obj = jQuery.parseJSON( response );
-        console.log(obj);
-        $('.modal--go-to-cart').arcticmodal();
-    });
   });
 
 });

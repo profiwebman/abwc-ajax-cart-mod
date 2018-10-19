@@ -37,8 +37,6 @@ class ABWC_Ajax_Cart_Loader {
 		add_action( 'wp_ajax_woocommerce_add_to_cart_variable_rc', array( $this, 'abwc_add_to_cart_variable_rc_callback' ) );
 		add_action( 'wp_ajax_nopriv_woocommerce_add_to_cart_variable_rc', array( $this, 'abwc_add_to_cart_variable_rc_callback' ) );
 
-		add_action( 'wp_footer', array( $this, 'add_popup_cart_window_html' ) );
-
 		add_action( 'wp_ajax_abwc_get_cart_total', array( $this, 'abwc_get_cart_total' ) );
 		add_action( 'wp_ajax_nopriv_abwc_get_cart_total', array( $this, 'abwc_get_cart_total' ) );
 
@@ -107,31 +105,59 @@ class ABWC_Ajax_Cart_Loader {
 
 	function abwc_get_cart_total() {
 
-		$returned_arr     = array();
+		$add_popup_window = run_abwc_ajax_cart()->option( 'show_popup_after_cart_add' );
+
+		if ( ! isset( $add_popup_window ) || ( isset( $add_popup_window ) && 'yes' !== $add_popup_window ) ) {
+			return;
+		}
+
 		$cart_totals      = WC()->cart->get_totals();
 		$cart             = WC()->cart->get_cart();
 		$cart_total_count = 0;
 		$product_id       = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
+		$quantity         = empty( $_POST['quantity'] ) ? 1 : apply_filters( 'woocommerce_stock_amount', $_POST['quantity'] );
 		$variation_id     = isset( $_POST['variation_id'] ) ? ( $_POST['variation_id'] ) : '';
 		$variation        = isset( $_POST['variation'] ) ? ( $_POST['variation'] ) : '';
+		$type             = isset( $_POST['type'] ) ? ( $_POST['type'] ) : 'simple';
 
 		foreach ( $cart as $key => $item ) {
 				$cart_total_count += $item['quantity'];
 		}
+
 		$first_value  = reset( $cart );
 		$last_product = WC()->cart->get_cart_item( $first_value['key'] );
 		$image        = wp_get_attachment_image_src( get_post_thumbnail_id( $last_product['product_id'] ), 'single-post-thumbnail' );
 		$image        = $image[0];
+		if ( ! $variation_id ) {
+			$product = new WC_Product( $product_id );
+		} else {
+			$product = new WC_Product_Variable( $product_id );
+		}
+		$product_name = $product->name;
+		$price        = $product->price;
 
-		$product    = new WC_Product_Variable( $product_id );
-		$variations = $product->get_available_variations();
+		if ( 'variable' === $product->get_type() ) {
 
-		foreach ( $variations as $key => $variation_data ) {
-			if ( $variation_data['variation_id'] == $variation_id ) {
-				$image = $variation_data['image']['src'];
+			$variations = $product->get_available_variations();
+
+			foreach ( $variations as $key => $variation_data ) {
+				if ( $variation_data['variation_id'] == $variation_id ) {
+					$image = $variation_data['image']['src'];
+					$price = $variation_data['display_price'];
+				}
 			}
 		}
-		echo json_encode( $variation );
+
+		echo json_encode(
+			array(
+				'product_name'  => $product_name,
+				'image'         => $image,
+				'count_in_cart' => $cart_total_count,
+				'product_price' => wc_price( $price, '' ),
+				'total_price'   => wc_price( ( $cart_totals['total'] ), '' ),
+			)
+		);
+
 		wp_die();
 
 	}
@@ -204,8 +230,8 @@ class ABWC_Ajax_Cart_Loader {
 	public function assets() {
 
 		wp_enqueue_script( 'abwc-arcticmodal-js', ABWC_AJAX_CART_PLUGIN_URL . 'assets/js/arcticmodal.min.js', array( 'jquery' ), ABWC_AJAX_CART_PLUGIN_VERSION . true );
-		wp_enqueue_script( 'abwc-ajax-mod-js', ABWC_AJAX_CART_PLUGIN_URL . 'assets/js/abwc-ajax-cart-mod.js', array( 'jquery' ), ABWC_AJAX_CART_PLUGIN_VERSION . true );
-		wp_enqueue_script( 'abwc-ajax-variation-mod--js', ABWC_AJAX_CART_PLUGIN_URL . 'assets/js/abwc-ajax-variation-cart-mod.js', array( 'jquery' ), ABWC_AJAX_CART_PLUGIN_VERSION . true );
+		wp_enqueue_script( 'abwc-ajax-mod-js', ABWC_AJAX_CART_PLUGIN_URL . 'assets/js/abwc-ajax-cart-mod.min.js', array( 'jquery' ), ABWC_AJAX_CART_PLUGIN_VERSION . true );
+		wp_enqueue_script( 'abwc-ajax-variation-mod--js', ABWC_AJAX_CART_PLUGIN_URL . 'assets/js/abwc-ajax-variation-cart-mod.min.js', array( 'jquery' ), ABWC_AJAX_CART_PLUGIN_VERSION . true );
 
 		wp_enqueue_style( 'abwc-ajax-mod-css', ABWC_AJAX_CART_PLUGIN_URL . 'assets/css/abwc-ajax-cart-mod.css' );
 		wp_enqueue_style( 'abwc-arcticmodal-css', ABWC_AJAX_CART_PLUGIN_URL . 'assets/css/jquery.arcticmodal-0.3.css' );
@@ -223,42 +249,4 @@ class ABWC_Ajax_Cart_Loader {
 
 	}
 
-	public function add_popup_cart_window_html() {
-
-		$add_popup_window = run_abwc_ajax_cart()->option( 'show_popup_after_cart_add' );
-
-		if ( ! isset( $add_popup_window ) || ( isset( $add_popup_window ) && 'yes' !== $add_popup_window ) ) {
-			return;
-		}
-
-		$content = '  <div class="pv-modal modal--go-to-cart">
-		    <div class="pv-modal__close arcticmodal-close"></div>
-		    <div class="pv-modal__content">
-		      <div class="pv-modal__header">
-		        <h5 class="pv-modal__title">There\'s 2 products in your cart</h5>
-		      </div>
-		      <div class="pv-modal__body">
-		        <div class="pv-modal__main">
-		          <div class="pv-modal__img">
-		            <img src="http://purvapor.chillicode.ru/wp-content/uploads/2018/08/schweet-mango-50ml-de-fcukin-flava-5008-180x180.jpg" alt="">
-		          </div>
-		          <div class="pv-modal__info">
-		            <span class="pv-modal__result">Product added successfully</span>
-		            <span class="pv-modal__name">Paranormal DNA250C Lost Vape</span>
-		            <span class="pv-modal__cost">$500</span>
-		          </div>
-		        </div>
-		        <div class="pv-modal__price">
-		          <span>Total products:</span>
-		          <span class="pv-modal__total">$500</span>
-		        </div>
-		      </div>
-		      <div class="pv-modal__footer">
-		        <button type="button" class="btn btn--cm arcticmodal-close">Continue Shopping</button>
-		        <button type="button" class="btn btn--gtc">Go to cart</button>
-		      </div>
-		    </div>
-		  </div>';
-		echo $content;
-	}
 }
