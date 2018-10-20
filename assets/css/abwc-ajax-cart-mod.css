@@ -6,10 +6,14 @@
   display: none;
   position: relative;
   box-sizing: border-box;
+  margin: auto;
 }
 
 .arcticmodal-container .pv-modal {
   display: block;
+}
+td.arcticmodal-container_i2{
+  background-color: transparent!important;
 }
 
 .pv-modal__main {
@@ -82,8 +86,9 @@
   width: 50% !important;
   display: block !important;
   height: 40px !important;
-  padding: 8 !important;
+  padding: 8px !important;
   font-size: 14px !important;
+  text-align: center;
 }
 
 .pv-modal__footer {

@@ -30,6 +30,7 @@ class ABWC_Ajax_Cart_Loader {
 	public function __construct() {
 
 		add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'single_product_ajaxified_button' ) );
+		add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'quantity_inputs_for_woocommerce_loop_add_to_cart_link' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
@@ -68,6 +69,21 @@ class ABWC_Ajax_Cart_Loader {
 		}
 	}
 
+	public function quantity_inputs_for_woocommerce_loop_add_to_cart_link() {
+		global $product, $html;
+		if ( $product && $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() && ! $product->is_sold_individually() ) {
+			$html  = '<form action="' . esc_url( $product->add_to_cart_url() ) . '" class="cart" method="post" enctype="multipart/form-data">';
+			$html .= woocommerce_quantity_input( array(), $product, false );
+			$html .= '<button type="submit" name="add-to-cart" class="single_add_to_cart_button button alt">' . esc_html( $product->add_to_cart_text() ) . '</button>';
+			$html .= sprintf(
+				'<input type=hidden data-product_id="%s" data-product_sku="%s" class="abwc-ajax-btn button">',
+				esc_attr( $product->get_id() ),
+				esc_attr( $product->get_sku() )
+			);
+			$html .= '</form>';
+		}
+		return $html;
+	}
 	/**
 	 * Ajax callback for variable products
 	 *
@@ -190,7 +206,7 @@ class ABWC_Ajax_Cart_Loader {
 
 				if ( $product ) {
 					$defaults = array(
-						'quantity'   => 1,
+						'quantity'   => 2,
 						'class'      => implode(
 							' ',
 							array_filter(

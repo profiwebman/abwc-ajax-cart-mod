@@ -30,7 +30,7 @@ jQuery(function($) {
     var data = {
       product_id: $databutton.data('product_id'),
       product_sku: $databutton.data('product_sku'),
-      quantity: $('.quantity .qty').val()
+      quantity: $databutton.parent().find('.quantity .qty').val()
     };
 
     // Trigger event.
@@ -117,13 +117,13 @@ jQuery(function($) {
         var dataone = {
           action: 'abwc_get_cart_total',
           product_id: $databutton.data('product_id'),
-          quantity: $('.quantity .qty').val()
+          quantity: $databutton.parent().find('.quantity .qty').val()
         }
 
         $.post(wc_add_to_cart_params.ajax_url, dataone, function(response) {
           if (!response)
             return;
-
+  
           var obj = jQuery.parseJSON(response);
 
           var c = $('<div class="pv-modal modal--go-to-cart">');
