@@ -79,10 +79,11 @@
 }
 
 .pv-modal .btn {
-  width: 50%;
-  display: block;
-  height: 40px;
-  padding: 0;
+  width: 50% !important;
+  display: block !important;
+  height: 40px !important;
+  padding: 8 !important;
+  font-size: 14px !important;
 }
 
 .pv-modal__footer {
@@ -93,26 +94,26 @@
 
 .btn--gtc {
   margin-left: auto;
-  background: #fddb3e;
-  color: #000000;
-  font-weight: 600;
+  background: #fddb3e !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
   text-transform: uppercase;
 }
 
 .btn.btn--gtc:hover {
-  background: #d0ae0f;
+  background: #d0ae0f !important;
 }
 
 .btn--cm {
-  background: lightgray;
-  color: black;
-  font-weight: 600;
+  background: lightgray !important;
+  color: black !important;
+  font-weight: 600 !important;
   text-transform: uppercase;
   margin-right: 8px;
 }
 
 .btn--cm:hover {
-  background: gray;
+  background: gray !important;
 }
 
 .pv-modal__close {
