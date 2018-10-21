@@ -141,9 +141,7 @@ class ABWC_Ajax_Cart_Loader {
 				$cart_total_count += $item['quantity'];
 		}
 
-		$first_value  = reset( $cart );
-		$last_product = WC()->cart->get_cart_item( $first_value['key'] );
-		$image        = wp_get_attachment_image_src( get_post_thumbnail_id( $last_product['product_id'] ), 'single-post-thumbnail' );
+		$image        = wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'single-post-thumbnail' );
 		$image        = $image[0];
 		if ( ! $variation_id ) {
 			$product = new WC_Product( $product_id );
