@@ -131,6 +131,7 @@ class ABWC_Ajax_Cart_Loader {
 		$cart_totals      = WC()->cart->get_totals();
 		$cart             = WC()->cart->get_cart();
 		$cart_total_count = 0;
+		$image            = '';
 		$product_id       = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
 		$quantity         = empty( $_POST['quantity'] ) ? 1 : apply_filters( 'woocommerce_stock_amount', $_POST['quantity'] );
 		$variation_id     = isset( $_POST['variation_id'] ) ? ( $_POST['variation_id'] ) : '';
@@ -141,8 +142,8 @@ class ABWC_Ajax_Cart_Loader {
 				$cart_total_count += $item['quantity'];
 		}
 
-		$image        = wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'single-post-thumbnail' );
-		$image        = $image[0];
+		$image = wp_get_attachment_image_src( get_post_thumbnail_id( $product_id ), 'single-post-thumbnail' );
+		$image = $image[0];
 		if ( ! $variation_id ) {
 			$product = new WC_Product( $product_id );
 		} else {
