@@ -17,7 +17,7 @@ jQuery(function($) {
     e.preventDefault();
 
     var $thisbutton = $(this);
-    var $databutton = $('.abwc-ajax-btn');
+    var $databutton = $(this).parent().find('.abwc-ajax-btn');
 
     if (!$databutton.attr('data-product_id')) {
       return true;
