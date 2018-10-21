@@ -124,7 +124,8 @@ class ABWC_Ajax_Cart_Loader {
 		$add_popup_window = run_abwc_ajax_cart()->option( 'show_popup_after_cart_add' );
 
 		if ( ! isset( $add_popup_window ) || ( isset( $add_popup_window ) && 'yes' !== $add_popup_window ) ) {
-			return;
+			echo 'false';
+			wp_die();
 		}
 
 		$cart_totals      = WC()->cart->get_totals();
@@ -206,7 +207,7 @@ class ABWC_Ajax_Cart_Loader {
 
 				if ( $product ) {
 					$defaults = array(
-						'quantity'   => 2,
+						'quantity'   => 1,
 						'class'      => implode(
 							' ',
 							array_filter(

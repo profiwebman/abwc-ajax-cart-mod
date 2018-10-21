@@ -170,7 +170,7 @@ jQuery(function($) {
           }
 
           $.post(wc_add_to_cart_params.ajax_url, dataone, function(response) {
-            if (!response)
+            if (response == 'false')
               return;
 
             var obj = jQuery.parseJSON(response);
